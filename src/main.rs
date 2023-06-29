@@ -1,4 +1,4 @@
-use bevy::{prelude::*, window::{Cursor, PresentMode}, diagnostic::{LogDiagnosticsPlugin, FrameTimeDiagnosticsPlugin}};
+use bevy::{prelude::*, window::{PresentMode}};
 use consts::WINDOW_SIZE;
 use gui::*;
 
@@ -21,6 +21,14 @@ fn main() {
         ..default()
     }))
         .add_startup_system(setup)
-        .add_startup_system(create_board)
+        .add_startup_system(create)
         .run();
+}
+
+pub fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    commands.spawn(Camera2dBundle::default());
 }

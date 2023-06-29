@@ -1,15 +1,7 @@
 use bevy::{prelude::*};
 use crate::consts::*;
 
-pub fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands.spawn(Camera2dBundle::default());
-}
-
-pub fn create_board(
+pub fn create(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -62,8 +54,8 @@ impl Square {
 
     fn to_sprite(&self) -> SpriteBundle {
         let translation = Vec3::new(
-            (self.col - BOARD_SIZE / 2) as f32 * SQUARE_SIZE,
-            (self.row - BOARD_SIZE / 2) as f32 * SQUARE_SIZE,
+            (self.col - (BOARD_SIZE / 2)) as f32 * SQUARE_SIZE + 38.,
+            (self.row - (BOARD_SIZE / 2)) as f32 * SQUARE_SIZE + 38.,
             0.0,
         );
 
