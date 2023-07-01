@@ -1,3 +1,3 @@
-pub const BOARD_SIZE: i32 = 8;
-pub const SQUARE_SIZE: f32 = 75.;
-pub const WINDOW_SIZE: f32 = 600.;
+pub const NUM_SQUARES: usize = 64;
+pub const NUM_FILES: usize = 8;
+pub const NUM_RANKS: usize = 8;
