@@ -1,4 +1,4 @@
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone, Copy)]
 pub enum Piece {
     Pawn = 0,
     Bishop = 1,
@@ -22,8 +22,46 @@ impl From<usize> for Piece {
     }
 }
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+impl Into<usize> for Piece {
+    fn into(self) -> usize {
+        match self {
+            Piece::Pawn => 0,
+            Piece::Bishop => 1,
+            Piece::Knight => 2,
+            Piece::Rook => 3,
+            Piece::Queen => 4,
+            Piece::King => 5,
+        }
+    }
+}
+
+pub fn index_from_tuple(tuple: &(Piece, PieceColor)) -> usize {
+    let mut index: usize = tuple.0.into();
+    index += if tuple.1 == PieceColor::White { 6 } else { 0 };
+    index
+}
+
+#[derive(PartialEq, Eq, Debug, Clone, Copy)]
 pub enum PieceColor {
     Black,
     White,
 }
+
+impl From<usize> for PieceColor {
+    fn from(value: usize) -> Self {
+        match value {
+            1 => PieceColor::White,
+            _ => PieceColor::Black,
+        }
+    }
+}
+
+impl Into<usize> for PieceColor {
+    fn into(self) -> usize {
+        match self {
+            PieceColor::Black=> 0,
+            PieceColor::White => 1,
+        }
+    }
+}
+
