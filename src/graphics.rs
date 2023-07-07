@@ -13,10 +13,10 @@ use speedy2d::shape::Rect;
 use speedy2d::window::{WindowHandler, WindowHelper};
 use speedy2d::Graphics2D;
 
-const WINDOW_DIMENSION: u32 = 640;
-const SQUARE_DIMENSION: usize = WINDOW_DIMENSION as usize / 8;
-const TITLE: &str = "森 Rusty Chess";
-const PIECES: [&str; 12] = [
+pub const WINDOW_DIMENSION: u32 = 640;
+pub const SQUARE_DIMENSION: usize = WINDOW_DIMENSION as usize / 8;
+pub const TITLE: &str = "森 Rusty Chess";
+pub const PIECES: [&str; 12] = [
     "src/sprites/p_black.png",
     "src/sprites/b_black.png",
     "src/sprites/n_black.png",
@@ -95,7 +95,6 @@ impl WindowHandler for ChessWinHandler {
 
             if let Some(index) = self.selected_component {
                 let selected_component = &mut self.pieces[index];
-                println!("{:#?}", selected_component);
                 selected_component.is_dragging = true;
                 selected_component.offset = self.mouse_position - selected_component.position;
                 selected_component.size = selected_component.size + Vector2{x: 5., y: 5.};
@@ -159,9 +158,7 @@ impl ChessWinHandler {
 
     /// iterates over all the squares in the struct BoardView and renders it
     fn draw_chess_board(&mut self, _helper: &mut WindowHelper, graphics: &mut Graphics2D) {
-        for s in self.board_view.squares.iter() {
-            graphics.draw_rectangle(s.shape.to_owned(), s.color)
-        }
+        self.board_view.squares.iter().for_each(|s| graphics.draw_rectangle(s.shape.to_owned(), s.color));
     }
 
     /// initializes all the sprites so that we can load from disk into ram only once in the runtime.
@@ -179,22 +176,29 @@ impl ChessWinHandler {
 
     /// iterates over all pieces (draggable) in the Vec and renders them
     fn draw_pieces(&mut self, _helper: &mut WindowHelper, graphics: &mut Graphics2D) {
-        for component in &self.pieces {
-            let plus = if component.is_dragging { 7. } else { 0. };
-
+        for component in self.pieces.iter() {
+            let plus = if component.is_dragging { 7.0 } else { 0.0 };
+    
             graphics.draw_rectangle_image(
-                            Rect::from_tuples(
-                            (component.position.x - plus, component.position.y - plus)
-                                    , (component.position.x + SQUARE_DIMENSION as f32 + plus
-                                    , component.position.y + SQUARE_DIMENSION as f32 + plus)),
-                                self.pieces_sprites
-                                .clone()
-                                .expect("failed vec")
-                                .get(index_from_tuple(&component.piece_type))
-                                .expect("failed image"));
+                Rect::from_tuples(
+                    (
+                        component.position.x - plus,
+                        component.position.y - plus,
+                    ),
+                    (
+                        component.position.x + SQUARE_DIMENSION as f32 + plus,
+                        component.position.y + SQUARE_DIMENSION as f32 + plus,
+                    ),
+                ),
+                self.pieces_sprites
+                    .clone()
+                    .expect("failed vec")
+                    .get(index_from_tuple(&component.piece_type))
+                    .expect("failed image"),
+            );
         }
     }
-
+    
     /// def. not final, may go
     fn read_board(&mut self) {
         // TODO: check the logic and represent the actual board.
@@ -209,10 +213,7 @@ impl ChessWinHandler {
                     if (p & (self.board.colors[0] & curr_bit)) != 0 { // white
                         self.pieces.push(DraggableChessPiece::new(
                             (Piece::from(index) ,PieceColor::White),
-                            Vector2 { 
-                                x: (i * SQUARE_DIMENSION) as f32,
-                                y: ((i / 8) * SQUARE_DIMENSION) as f32 
-                            },
+                            self.board_view.squares.get(i as usize).unwrap().shape.top_left().clone(),
                             Vector2{ x: SQUARE_DIMENSION as f32, y: SQUARE_DIMENSION as f32},
                             i as u8,
                         ));
@@ -220,10 +221,7 @@ impl ChessWinHandler {
                     else if (p & (self.board.colors[1] & curr_bit)) != 0 { // black
                         self.pieces.push(DraggableChessPiece::new(
                             (Piece::from(index) ,PieceColor::Black),
-                            Vector2 { 
-                                x: (i * SQUARE_DIMENSION) as f32,
-                                y: ((i / 8) * SQUARE_DIMENSION) as f32 
-                            },
+                            self.board_view.squares.get(i as usize).unwrap().shape.top_left().clone(),
                             Vector2{ x: SQUARE_DIMENSION as f32, y: SQUARE_DIMENSION as f32},
                             i as u8,
                         ));
