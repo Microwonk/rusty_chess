@@ -1,9 +1,5 @@
-use std::os::windows::thread;
-use std::thread::sleep;
-use std::time::Duration;
-
 use crate::chess::board::Board;
-use crate::chess::consts::*;
+use crate::chess::{consts::*, squares};
 use crate::chess::pieces::{Piece, PieceColor, index_from_tuple};
 use speedy2d::Window;
 use speedy2d::color::Color;
@@ -44,6 +40,14 @@ pub fn init() {
         mouse_position: Vector2::ZERO,
         is_button_down: false,
     };
+
+
+// !! TEST
+    println!("{}", format!("{:064b}", squares::Square::A1.bitboard()));
+    println!("{}", format!("{:064b}", squares::Square::D1.bitboard()));
+    println!("{}", format!("{:064b}", squares::Square::F2.bitboard()));
+    println!("{}", format!("{:064b}", squares::Square::F7.bitboard()));
+    println!("{}", format!("{:064b}", squares::Square::H5.bitboard()));
 
     handler.read_board();
 
@@ -96,7 +100,7 @@ impl WindowHandler for ChessWinHandler {
             if let Some(index) = self.selected_component {
                 let selected_component = &mut self.pieces[index];
                 selected_component.is_dragging = true;
-                selected_component.offset = self.mouse_position - selected_component.position;
+                selected_component.offset = selected_component.size / 2.;
                 selected_component.size = selected_component.size + Vector2{x: 5., y: 5.};
             }
         }
@@ -177,27 +181,32 @@ impl ChessWinHandler {
     /// iterates over all pieces (draggable) in the Vec and renders them
     fn draw_pieces(&mut self, _helper: &mut WindowHelper, graphics: &mut Graphics2D) {
         for component in self.pieces.iter() {
-            let plus = if component.is_dragging { 7.0 } else { 0.0 };
-    
-            graphics.draw_rectangle_image(
-                Rect::from_tuples(
-                    (
-                        component.position.x - plus,
-                        component.position.y - plus,
-                    ),
-                    (
-                        component.position.x + SQUARE_DIMENSION as f32 + plus,
-                        component.position.y + SQUARE_DIMENSION as f32 + plus,
-                    ),
-                ),
-                self.pieces_sprites
-                    .clone()
-                    .expect("failed vec")
-                    .get(index_from_tuple(&component.piece_type))
-                    .expect("failed image"),
-            );
+            self.draw_piece(component, graphics);
         }
-    }
+        // draw piece over all other ones (dragged moimp)
+        if let Some(index) = self.selected_component {
+            self.draw_piece(&self.pieces[index], graphics);
+        }       
+    }    
+    fn draw_piece(&self, component: &DraggableChessPiece, graphics: &mut Graphics2D) {
+        graphics.draw_rectangle_image(
+            Rect::from_tuples(
+                (
+                    component.position.x,
+                    component.position.y,
+                ),
+                (
+                    component.position.x + SQUARE_DIMENSION as f32,
+                    component.position.y + SQUARE_DIMENSION as f32,
+                ),
+            ),
+            self.pieces_sprites
+                .clone()
+                .expect("failed vec")
+                .get(index_from_tuple(&component.piece_type))
+                .expect("failed image"),
+        );
+    }     
     
     /// def. not final, may go
     fn read_board(&mut self) {
@@ -212,7 +221,7 @@ impl ChessWinHandler {
 
                     if (p & (self.board.colors[0] & curr_bit)) != 0 { // white
                         self.pieces.push(DraggableChessPiece::new(
-                            (Piece::from(index) ,PieceColor::White),
+                            (Piece::from_ordinal(index as i8).unwrap() ,PieceColor::White),
                             self.board_view.squares.get(i as usize).unwrap().shape.top_left().clone(),
                             Vector2{ x: SQUARE_DIMENSION as f32, y: SQUARE_DIMENSION as f32},
                             i as u8,
@@ -220,7 +229,7 @@ impl ChessWinHandler {
                     }
                     else if (p & (self.board.colors[1] & curr_bit)) != 0 { // black
                         self.pieces.push(DraggableChessPiece::new(
-                            (Piece::from(index) ,PieceColor::Black),
+                            (Piece::from_ordinal(index as i8).unwrap() ,PieceColor::Black),
                             self.board_view.squares.get(i as usize).unwrap().shape.top_left().clone(),
                             Vector2{ x: SQUARE_DIMENSION as f32, y: SQUARE_DIMENSION as f32},
                             i as u8,

@@ -1,6 +1,6 @@
 use std::vec;
 
-use speedy2d::{Window, window::{WindowHandler, WindowHelper}, dimen::Vector2, Graphics2D, color::Color, shape::Rect};
+use speedy2d::{Window, window::{WindowHandler, WindowHelper}, dimen::Vector2, Graphics2D, color::Color};
 
 use crate::graphics::{BoardView, SQUARE_DIMENSION, WINDOW_DIMENSION};
 
@@ -34,7 +34,7 @@ impl WindowHandler for BitboardWinHandler {
 
     fn on_mouse_button_down(
         &mut self,
-        helper: &mut WindowHelper<()>,
+        _helper: &mut WindowHelper<()>,
         _button: speedy2d::window::MouseButton) {
 
             let clicked_index = self.translate_mouse_pos_to_index().unwrap_or(0) as usize;
@@ -46,14 +46,14 @@ impl WindowHandler for BitboardWinHandler {
             }
         }
 
-    fn on_mouse_move(&mut self, helper: &mut WindowHelper<()>, position: speedy2d::dimen::Vec2) {
+    fn on_mouse_move(&mut self, _helper: &mut WindowHelper<()>, position: speedy2d::dimen::Vec2) {
         self.mouse_position = position;
     }
 
     fn on_key_down(
             &mut self,
-            helper: &mut WindowHelper<()>,
-            virtual_key_code: Option<speedy2d::window::VirtualKeyCode>,
+            _helper: &mut WindowHelper<()>,
+            _virtual_key_code: Option<speedy2d::window::VirtualKeyCode>,
             scancode: speedy2d::window::KeyScancode
         ) {
         if scancode == 28 {

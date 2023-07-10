@@ -11,3 +11,4 @@ bitboard_generator = []
 chess = "3.2.0"
 speedy2d = "1.12.0"
 futures = { version = "0.3", features = ["async-await"] }
+enum-ordinalize = "3.1.13"

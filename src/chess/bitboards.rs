@@ -9,4 +9,22 @@ pub const DEFAULT_KINGS: BitBoard = 0x1000000000000010;
 pub const DEFAULT_WHITE_MASK: BitBoard = 0x000000000000FFFF;
 pub const DEFAULT_BLACK_MASK: BitBoard = 0xFFFF000000000000;
 
+pub const FILE_A: BitBoard = 0x0101010101010101;
+pub const FILE_B: BitBoard = 0x0202020202020202;
+pub const FILE_C: BitBoard = 0x0404040404040404;
+pub const FILE_D: BitBoard = 0x0808080808080808;
+pub const FILE_E: BitBoard = 0x1010101010101010;
+pub const FILE_F: BitBoard = 0x2020202020202020;
+pub const FILE_G: BitBoard = 0x4040404040404040;
+pub const FILE_H: BitBoard = 0x8080808080808080;
+
+pub const RANK_ONE: BitBoard = 0xFF00000000000000;
+pub const RANK_TWO: BitBoard = 0x00FF00000000000;
+pub const RANK_THREE: BitBoard = 0x0000FF0000000000;
+pub const RANK_FOUR: BitBoard = 0x0000000FF0000000;
+pub const RANK_FIVE: BitBoard = 0x000000000FF00000;
+pub const RANK_SIX: BitBoard = 0x000000000000FF00;
+pub const RANK_SEVEN: BitBoard = 0x000000000000FF00;
+pub const RANK_EIGHT: BitBoard = 0x00000000000000FF;
+
 pub type BitBoard = u64;
